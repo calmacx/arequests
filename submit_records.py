@@ -39,7 +39,7 @@ for i in range(100):
         data = json.dumps(dict(config,**{'urls':urls}))
         
         response = lambda_client.invoke(
-            FunctionName=,
+            FunctionName=lambda_arn,
             InvocationType='Event',
             Payload=data
         )
