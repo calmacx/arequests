@@ -33,10 +33,9 @@ for file_obj in objs:
     temp = name.split("/")
     url = "/".join(temp[:-1])
     response = temp[-1]
-    print (url,response)
+
     wp_attack.update_one(
-        { 'url': url},
-        { '$inc': {'ntries':1}, '$set':{'response':response}}
+       { 'url': url, 'response':{'$exists':False}},
+       { '$inc': {'ntries':1}, '$set':{'response':response}}
     )
-    print (wp_attack.find_one({"url":url}))
-    print ("-------------")
+    #print ("-------------")
