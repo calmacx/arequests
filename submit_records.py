@@ -25,6 +25,10 @@ password = config['password']
 client = pymongo.MongoClient(f"mongodb://{username}:{password}@localhost:{db_port}/")
 db = client[db_client]
 wp_attack = db[db_collection]
+wp_attack.create_index( [('response',pymongo.ASCENDING )] )
+print ("created response index")
+wp_attack.create_index( [('url',pymongo.ASCENDING )] )
+exit(0)
 
 n=10000
 nurls_per_job=10

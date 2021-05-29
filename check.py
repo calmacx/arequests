@@ -19,8 +19,13 @@ client = pymongo.MongoClient(f"mongodb://{username}:{password}@localhost:{db_por
 db = client[db_client]
 wp_attack = db[db_collection]
 
-print (wp_attack.find({'response':{'$ne':None}}).count())
-print (wp_attack.count())
+ntried = wp_attack.count_documents({'response':{'$ne':None}})
+ngood = wp_attack.count_documents({'$or':[{'response':200},{'response':300}]})
+ntotal = wp_attack.find({}).count()
+print ('Good',ngood)
+print (f'Tried={ntried} Total={ntotal}; {100*ntried/ntotal}')
+print ('Distinct',wp_attack.find({ 'response': {'$ne':None }}).distinct('response'))
+
 exit(0)
 available = wp_attack.aggregate([
     {'$project': { '_id': 0,'response':1, 'url':1 } },
