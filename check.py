@@ -19,7 +19,7 @@ client = pymongo.MongoClient(f"mongodb://{username}:{password}@{db_ip}:{db_port}
 db = client[db_client]
 wp_attack = db[db_collection]
 
-#print (wp_attack.find({'response':{'$ne':None}}).count())
+print (wp_attack.find({'response':{'$ne':None}}).count())
 print (wp_attack.count())
 exit(0)
 available = wp_attack.aggregate([
