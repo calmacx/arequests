@@ -25,7 +25,8 @@ db = client[db_client]
 wp_attack = db[db_collection]
 
 #wp_attack.create_index( [('url',pymongo.ASCENDING )] )
-
+wp_attack.create_index( [('response',pymongo.ASCENDING )] )
+exit(0)
 
 objs =  bucket.objects.all()
 for file_obj in objs:

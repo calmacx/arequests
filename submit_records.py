@@ -1,6 +1,7 @@
 import pymongo
 import requests
 import json
+import time
 
 import boto3
 lambda_client = boto3.client('lambda')
@@ -25,19 +26,30 @@ client = pymongo.MongoClient(f"mongodb://{username}:{password}@localhost:{db_por
 db = client[db_client]
 wp_attack = db[db_collection]
 
-n=100
+n=10000
+nurls_per_job=10
+nurls=1000
+
+nvalid = wp_attack.find({'response':{'$ne':None}}).count()
+ntotal = wp_attack.count()
+nsample = int((20*nurls)/((ntotal-nvalid)/(ntotal)))
+print (nvalid,ntotal,nsample)
+
 for i in range(n):
+
+    wp_attack.create_index( [('response',pymongo.ASCENDING )] )
+
     print (f"working on {i}/{n}")
     available = wp_attack.aggregate([
         {'$project': { '_id': 0,'response':1, 'url':1 } },
-        {'$sample': { 'size': 1000 } },
-        {'$match': { 'response':None }  },
-        {'$sample': { 'size': 100 } }
+        {'$sample': { 'size': nsample } },
+        {'$match': { 'response': {'$exists':False} }  },
+        {'$sample': { 'size': nurls } }
     ])
     all_urls = [x['url'] for x in list(available)]
-    print ('got all urls')
+    print (f'got all {len(all_urls)} urls')
     
-    batch_urls = list(chunk(all_urls,10))
+    batch_urls = list(chunk(all_urls,nurls_per_job))
     print ('start the batch process')
     
     for j,urls in enumerate(batch_urls):
@@ -51,3 +63,5 @@ for i in range(n):
         print (response)
         if 'Payload' in response:
             print (response['Payload'].read())
+            
+    #time.sleep(60)
