@@ -21,8 +21,8 @@ db_collection = config['db_collection']
 username = config['username']
 password = config['password']
 
-#client = pymongo.MongoClient(f"mongodb://{username}:{password}@{db_ip}:{db_port}/")
-client = pymongo.MongoClient(f"mongodb://{username}:{password}@localhost:{db_port}/")
+client = pymongo.MongoClient(f"mongodb://{username}:{password}@{db_ip}:{db_port}/")
+#client = pymongo.MongoClient(f"mongodb://{username}:{password}@localhost:{db_port}/")
 db = client[db_client]
 wp_attack = db[db_collection]
 wp_attack.create_index( [('response',pymongo.ASCENDING )] )
@@ -60,12 +60,11 @@ for i in range(n):
         data = json.dumps(dict(config,**{'urls':urls}))
         response = lambda_client.invoke(
             FunctionName=lambda_arn,
-            InvocationType='Event',
+            #InvocationType='Event',
             Payload=data
         )
         print (f"\t {j}/{len(batch_urls)} of length {len(urls)}")
         print (response)
         if 'Payload' in response:
             print (response['Payload'].read())
-            
-    #time.sleep(60)
+

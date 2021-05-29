@@ -15,7 +15,7 @@ db_collection = config['db_collection']
 username = config['username']
 password = config['password']
 
-client = pymongo.MongoClient(f"mongodb://{username}:{password}@localhost:{db_port}/")
+client = pymongo.MongoClient(f"mongodb://{username}:{password}@{db_ip}:{db_port}/")
 db = client[db_client]
 wp_attack = db[db_collection]
 
