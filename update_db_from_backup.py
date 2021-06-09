@@ -16,27 +16,14 @@ username = config['username']
 password = config['password']
 
 client = pymongo.MongoClient(f"mongodb://{username}:{password}@{db_ip}:{db_port}/")
-#client = pymongo.MongoClient(f"mongodb://{username}:{password}@localhost:{db_port}/")
 db = client[db_client]
 wp_attack = db[db_collection]
-wp_attack.drop()
-exit(0)
 
-def move_to_backup():
-    new_wp_attack = db['backup']
-    found = wp_attack.find({'response':{'$ne':None}},{'_id':0,'url':1,'response':1})
-    n=found.count()
-    print (n)
-    documents = []
-    for i,obj in enumerate(list(found)):
-        url = obj['url']
-        response = obj['response']
-        documents.append({'url':url,'ntries':1,'response':response})
-        if i%1000 == 0 :
-            print (f"{i}/{n} done")
-    print ("now registering")
-    new_wp_attack.insert_many(documents)
+backup = db['backup']
 
+obj = backup.find_one({},{'_id':0,'url':1,'response':1})
+print (obj)
+print (list(wp_attack.find({'url':obj['url']})))
 
 exit(0)
 
